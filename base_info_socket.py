@@ -20,7 +20,7 @@ def baseinfo_check(target_server_ip, port, task_id):
     # 组装发送的类型
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
-    send_data = '{"typeCode":%d,"basename":"%s","finish_time":"%s","scanid":"%s","data":"%s"}' % (Type.BASE_INFO, board_id, time, task_id, data)
+    send_data = '{"typeCode":%d,"basename":"%s","finish_time":"%s","scanid":"%s","data":%s}' % (Type.BASE_INFO, board_id, time, task_id, data)
     # print(send_data)
     # 发送
     client_socket.send(send_data.encode('utf-8'))

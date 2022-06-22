@@ -215,5 +215,5 @@ class Base:
         }
         return json.dumps(dic)
 
-print(Base.get_update_info())
+# print(Base.get_update_info())
 

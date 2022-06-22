@@ -21,7 +21,7 @@ scan = {
 def user_register(value):
     jsonstr = json.dumps(value)
     print(jsonstr)
-    req = requests.post('http://10.133.60.80:8077/userLines/insert',
+    req = requests.post('http://10.134.40.47:8077/userLines/insert',
                         headers = {'Content-Type':'application/json'},
                         data = jsonstr)
     data = req.json()  # 接收返回的json数据
@@ -42,7 +42,7 @@ data = msg['data']
 
 
 if data:
-    target_server_ip = '10.133.60.80'
+    target_server_ip = '10.134.40.47'
     port = 9999
     for task in data:
         print(task)
