@@ -25,12 +25,9 @@ def policy_check(task_id, bsaename):
     time = now.strftime("%Y-%m-%d %H:%M:%S")
     result['finish_time'] = time
 
-    if is_admin():
-        # 获取基本信息
-        data = get_policy_info(task_id, bsaename)
-        result['send_data'] = data
-    else:
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    # 获取基本信息
+    data = get_policy_info(task_id, bsaename)
+    result['send_data'] = data
 
     print(result)
     return result

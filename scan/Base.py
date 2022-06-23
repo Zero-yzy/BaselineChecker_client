@@ -47,7 +47,7 @@ class Base:
 
     # 获取当前设备的基本信息
     @staticmethod
-    def get_base_info():
+    def get_base_info(scanId, basename):
         # 获取开放端口
         cmd = "netstat -ano | findstr LISTENING"
         pattern = r"[0-9]+.[0-9]+.[0-9]+.[0-9]+:(\d+)"
@@ -62,15 +62,22 @@ class Base:
         used_mem = round(mem.used / (1024 * 1024 * 1024), 2)
         mem_use_rate = mem.percent
 
-        dic_info = {
-            'hostname': platform.uname()[1],
-            'ip': Base.get_ip(),
-            'OS': platform.uname()[0] + " " + platform.uname()[2] + " v" + platform.uname()[3],
-            'CPU': platform.uname()[5] + " " + str(psutil.cpu_percent(0)) + "%",
-            'open_port': ",".join(result),
-            'used_memory': str(used_mem) + "/" + str(total_mem) + '=' + str(mem_use_rate) + "%"
-        }
-        return json.dumps(dic_info)
+        # 获取注册时间
+        now = datetime.datetime.now()
+        time = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        dic_info = [{
+            "scanId": scanId,
+            "basename": basename,
+            "hostname": platform.uname()[1],
+            "ip": Base.get_ip(),
+            "osInfo": platform.uname()[0] + " " + platform.uname()[2] + " v" + platform.uname()[3],
+            "cpuInfo": platform.uname()[5] + " " + str(psutil.cpu_percent(0)) + "%",
+            "openPort": ",".join(result),
+            "usedMemory": str(used_mem) + "/" + str(total_mem) + "=" + str(mem_use_rate) + "%",
+            "registerTime": time
+        }]
+        return dic_info
 
     # 扫描安装软件列表
     @staticmethod

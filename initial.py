@@ -3,6 +3,7 @@ from scan.Base import Base
 import json
 import requests
 
+import base_info_scan
 import service_info_scan
 import policy_info_scan
 import base_info_socket
@@ -14,7 +15,7 @@ import service_info_socket
 import update_soft_socket
 
 scan = {
-    '1': base_info_socket.baseinfo_check,
+    '1': base_info_scan.baseinfo_check,
     '2': install_soft_socket.inssoft_check,
     '3': network_info_socket.network_check,
     '4': update_soft_socket.update_check,
@@ -38,19 +39,6 @@ def scan_post(value, scan_id):
     # 贮存response信息
     dataList = []
 
-    # 更新finish_time
-    finish_data = {
-        "id": scan_id,
-        "finishTime": value['finish_time']
-    }
-    finish = json.dumps(finish_data)
-    # print(finish)
-    req = requests.post('http://127.0.0.1:8082/scan/updateById',
-                        headers={'Content-Type': 'application/json'},
-                        data=finish.encode('utf-8'))
-    finish_res = req.json()  # 接收返回的json数据
-    dataList.append(finish_res)  # 返回字节形式
-
     # 更新对应的扫描结果表
     url = value['url']
     send_data = value['send_data']
@@ -64,12 +52,26 @@ def scan_post(value, scan_id):
                             data=jsonstr.encode('utf-8'))
         # 接收返回的json数据
         dataList.append(req.json())
+
+    # 更新finish_time
+    finish_data = {
+        "id": scan_id,
+        "finishTime": value['finish_time']
+    }
+    finish = json.dumps(finish_data)
+    # print(finish)
+    req = requests.post('http://127.0.0.1:8082/scan/updateById',
+                        headers={'Content-Type': 'application/json'},
+                        data=finish.encode('utf-8'))
+    finish_res = req.json()  # 接收返回的json数据
+    dataList.append(finish_res)  # 返回字节形式
+
     return dataList  # 返回字节形式
 
 
 basename = Base.get_board_id()
 # print(basename)
-username = "yzy"
+username = "usertest5"
 # 组装发送的数据
 send_data = {
     "username": username,
