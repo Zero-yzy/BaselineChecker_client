@@ -119,12 +119,22 @@ class Base:
     # 获取网络配置信息
 
     @staticmethod
-    def get_network_info():
+    def get_network_info(task_id, basename):
         # 实例化wmi类
         w = wmi.WMI()
         #  配置及获取网络连接相关信息
         wmi_win32_network_adapter_configuration = w.Win32_NetworkAdapterConfiguration(IPEnabled=1)
-        return json.dumps(wmi_win32_network_adapter_configuration, default=Base.network2dict)
+        print(wmi_win32_network_adapter_configuration)
+        json_result = json.dumps(wmi_win32_network_adapter_configuration, default=Base.network2dict)
+
+        result = json.loads(json_result)
+        print(result)
+
+        for item in result:
+            item["scanId"] = task_id
+            item["basename"] = basename
+
+        return result
 
     # 网络信息转dict
     @staticmethod
@@ -186,7 +196,7 @@ class Base:
         update_obj = wmi.WMI().Win32_QuickFixEngineering()
         list_fix = []
         for s in update_obj:
-            list_fix.append([s.HotFixID, s.InstalledOn, s.Description, s.InstalledBy])
+            list_fix.append([s.HotFixID, s.InstalledOn, s.Description, s.IstalledBy])
         return list_fix
 
     # 获得最后升级日期
@@ -207,14 +217,19 @@ class Base:
 
     # 获取补丁信息
     @staticmethod
-    def get_update_info():
-        update_info = Base.update_information()
-        last_time = Base.get_last_update()
-        dic = {
-            "updateInfo": update_info,
-            "lastTime": last_time
-        }
-        return json.dumps(dic)
+    def get_update_info(task_id, basename):
+        update_obj = wmi.WMI().Win32_QuickFixEngineering()
+        result = []
+        for s in update_obj:
+            result.append({
+                "scanId": task_id,
+                "basename": basename,
+                "hotFixId": s.HotFixID,
+                "installedOn": s.InstalledOn,
+                "updateDescription": s.Description,
+                "installedBy": s.InstalledBy
+            })
 
+        return result
 
 # print(Base.get_update_info())
