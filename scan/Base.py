@@ -12,13 +12,12 @@ import datetime
 import winreg
 import time
 
-
 """
 该类用作扫描
 """
 
-class Base:
 
+class Base:
 
     # 获取主板id
     @staticmethod
@@ -46,8 +45,7 @@ class Base:
         for line in res.communicate():
             return line.decode("UTF-8")
 
-
-    #获取当前设备的基本信息
+    # 获取当前设备的基本信息
     @staticmethod
     def get_base_info():
         # 获取开放端口
@@ -60,8 +58,8 @@ class Base:
 
         # 获取内存信息
         mem = psutil.virtual_memory()
-        total_mem = round(mem.total/(1024*1024*1024),2)
-        used_mem = round(mem.used/(1024*1024*1024),2)
+        total_mem = round(mem.total / (1024 * 1024 * 1024), 2)
+        used_mem = round(mem.used / (1024 * 1024 * 1024), 2)
         mem_use_rate = mem.percent
 
         dic_info = {
@@ -74,8 +72,7 @@ class Base:
         }
         return json.dumps(dic_info)
 
-
-    #扫描安装软件列表
+    # 扫描安装软件列表
     @staticmethod
     def get_install_soft():
 
@@ -112,8 +109,7 @@ class Base:
         software_name = sorted(software_name)
         return json.dumps(software_name)
 
-
-    #获取网络配置信息
+    # 获取网络配置信息
 
     @staticmethod
     def get_network_info():
@@ -135,8 +131,7 @@ class Base:
 
         return info
 
-
-    #获取自启动项列表
+    # 获取自启动项列表
     @staticmethod
     def get_autoruns():
         # 1. 连接注册表根键
@@ -203,8 +198,7 @@ class Base:
                     last_day = (fix_item[1], time_stamp)
         return last_day[0]
 
-
-    #获取补丁信息
+    # 获取补丁信息
     @staticmethod
     def get_update_info():
         update_info = Base.update_information()
@@ -215,5 +209,5 @@ class Base:
         }
         return json.dumps(dic)
 
-# print(Base.get_update_info())
 
+# print(Base.get_update_info())

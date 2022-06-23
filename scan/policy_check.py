@@ -121,6 +121,7 @@ def is_admin():
 def run_code(cmd):
     return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+
 def createcfg():
     # cmd命令
     cmd = "secedit /export /cfg policy.ini"
@@ -130,9 +131,9 @@ def createcfg():
     else:
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 0)
 
-# 通过策略文件获取策略信息，更新数据库，并将结果保存为csv文件
-def get_policy_info():
 
+# 通过策略文件获取策略信息，更新数据库，并将结果保存为csv文件
+def get_policy_info(scan_id, basename):
     createcfg()
     time.sleep(1)
     # 将文件中的信息读出来，存入字典
@@ -205,15 +206,16 @@ def get_policy_info():
         # '策略编号','策略名称','检测值','建议值','核查结果','加固提示','策略说明'
         # result[0], result[1], value, result[5], eval_result, result[9], result_r
         policy_list.append({
+            'basename': basename,
+            'scanId': scan_id,
             'policyCode': result[0],
             'policyName': result[1],
-            'check': value,
-            'advice': result[5],
-            'result': eval_result,
-            'reinforce': result[9],
-            'explain': result_r
+            'policyCheck': value,
+            'policyAdvice': result[5],
+            'policyResult': eval_result,
+            'policyReinforce': result[9],
+            'policyExplain': result_r
         })
-
 
     # 关闭Cursor:
     cursor.close()
@@ -222,5 +224,4 @@ def get_policy_info():
     # 关闭connection：
     conn.close()
 
-    return json.dumps(policy_list,ensure_ascii=False)
-
+    return policy_list

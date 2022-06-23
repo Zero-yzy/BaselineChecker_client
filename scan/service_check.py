@@ -15,6 +15,7 @@ def check(value, proposed_state_val):
     else:
         return False
 
+
 # 获取cmd运行结果
 def run_code(cmd):
     res = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -23,8 +24,7 @@ def run_code(cmd):
 
 
 # 通过cmd搜索服务信息，更新数据库
-def get_service_info():
-
+def get_service_info(scan_id, basename):
     service_list = []
 
     # 连接数据库
@@ -66,14 +66,16 @@ def get_service_info():
         # 存入列表中
         # 依次为'服务编号','服务展示名称','服务名称','检测值','建议值','核查结果','加固提示','说明'
         service_list.append({
+            'basename': basename,
+            'scanId': scan_id,
             'serviceCode': value[0],
-            'serviceShowName' : value[1],
-            'serviceName' : value[2],
-            'check' : result,
-            'advice' : value_r,
-            'result' : eval_result,
-            'reinforce' : value[7],
-            'explain' : value[8]
+            'serviceShowName': value[1],
+            'serviceName': value[2],
+            'serviceCheck': result,
+            'serviceAdvice': value_r,
+            'serviceResult': eval_result,
+            'serviceReinforce': value[7],
+            'serviceExplain': value[8]
         })
 
     # 关闭Cursor:
@@ -83,5 +85,5 @@ def get_service_info():
     # 关闭connection：
     conn.close()
 
-    return json.dumps(service_list,ensure_ascii=False)
-
+    # return json.dumps(service_list, ensure_ascii=False)
+    return service_list
