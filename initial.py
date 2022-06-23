@@ -23,11 +23,13 @@ scan = {
     '6': policy_info_scan.policy_check,
 }
 
+serveIp = "10.136.126.244:8082"
+
 
 def user_register(value):
     jsonstr = json.dumps(value)
     print(jsonstr)
-    req = requests.post('http://10.136.126.244:8082/userLines/insert',
+    req = requests.post('http://' + serveIp + '/userLines/insert',
                         headers={'Content-Type': 'application/json'},
                         data=jsonstr)
     data = req.json()  # 接收返回的json数据
@@ -46,7 +48,7 @@ def scan_post(value, scan_id):
         # print(data)
         jsonstr = json.dumps(data, ensure_ascii=False)
         # print(jsonstr)
-        req = requests.post('http://10.136.126.244:8082' + url,
+        req = requests.post('http://' + serveIp + url,
                             headers={'Content-Type': 'application/json'},
                             data=jsonstr.encode('utf-8'))
         # 接收返回的json数据
@@ -59,7 +61,7 @@ def scan_post(value, scan_id):
     }
     finish = json.dumps(finish_data)
     # print(finish)
-    req = requests.post('http://10.136.126.244:8082/scan/updateById',
+    req = requests.post('http://' + serveIp + '/scan/updateById',
                         headers={'Content-Type': 'application/json'},
                         data=finish.encode('utf-8'))
     finish_res = req.json()  # 接收返回的json数据
@@ -114,7 +116,7 @@ def scan_create(task_type):
         "scanTime": start_time,
         "finishTime": finish_time
     }
-    requests.post('http://10.136.126.244:8082/scan/insert',
+    requests.post('http://' + serveIp + '/scan/insert',
                   headers={'Content-Type': 'application/json'},
                   data=scan_data.encode('utf-8'))
     # 返回结果
