@@ -15,4 +15,5 @@ class Type:
     SERVICE_INFO = 5
     # 策略信息
     POLICY_INFO = 6
-    # 自启动项
+    # 后门检测
+    VULNERABLE_INFO = 7

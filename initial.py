@@ -1,5 +1,6 @@
 import datetime
 
+import vulnerable_scan
 from scan.Base import Base
 import json
 import requests
@@ -9,7 +10,6 @@ import policy_info_scan
 import network_info_scan
 import update_soft_scan
 import autoruns_scan
-import install_soft_scan
 from gooey import Gooey, GooeyParser
 import random
 import re
@@ -21,9 +21,10 @@ scan = {
     '4': update_soft_scan.update_check,
     '5': service_info_scan.service_check,
     '6': policy_info_scan.policy_check,
+    '7': vulnerable_scan.vulnerable_check
 }
 
-serveIp = "10.136.126.244:8082"
+serveIp = "10.134.41.21:8082"
 
 
 def user_register(value):
@@ -116,9 +117,10 @@ def scan_create(task_type):
         "scanTime": start_time,
         "finishTime": finish_time
     }
+    scan_str = json.dumps(scan_data)
     requests.post('http://' + serveIp + '/scan/insert',
                   headers={'Content-Type': 'application/json'},
-                  data=scan_data.encode('utf-8'))
+                  data=scan_str.encode('utf-8'))
     # 返回结果
     return result
 
@@ -141,7 +143,8 @@ def BaselineCheck():
     create_task = subs.add_parser('创建扫描任务', help='用户主动发起扫描任务')
     create_task.add_argument("username2", metavar='用户名', help='请输入用户名', widget="TextField")
     create_task.add_argument("task", metavar='选择目标任务执行',
-                             choices=['任务1：基本信息', '任务2：自启动项', '任务3：网络信息', '任务4：补丁信息', '任务5：服务信息', '任务6：策略信息'],
+                             help='主动发起扫描任务',
+                             choices=['任务1：基本信息', '任务2：自启动项', '任务3：网络信息', '任务4：补丁信息', '任务5：服务信息', '任务6：策略信息','任务7：后门信息'],
                              default='任务1：基本信息')
     args = parser.parse_args()
 
