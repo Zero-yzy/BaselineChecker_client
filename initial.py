@@ -8,22 +8,17 @@ import service_info_scan
 import policy_info_scan
 import network_info_scan
 import update_soft_scan
-import base_info_socket
-import autoruns_socket
-import install_soft_socket
-import network_info_socket
-import policy_info_socket
-import service_info_socket
-import update_soft_socket
+import autoruns_scan
+import install_soft_scan
 
 scan = {
     '1': base_info_scan.baseinfo_check,
-    '2': install_soft_socket.inssoft_check,
+    '2': install_soft_scan.inssoft_check,
     '3': network_info_scan.network_check,
     '4': update_soft_scan.update_check,
     '5': service_info_scan.service_check,
     '6': policy_info_scan.policy_check,
-    '7': autoruns_socket.autorun_check
+    '7': autoruns_scan.autorun_check
 }
 
 

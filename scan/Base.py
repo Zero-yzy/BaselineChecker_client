@@ -81,7 +81,7 @@ class Base:
 
     # 扫描安装软件列表
     @staticmethod
-    def get_install_soft():
+    def get_install_soft(task_id, basename):
 
         # 定义注册表安装卸载软件检测位置，下列两种位置都可以找到
         # r'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'
@@ -150,11 +150,11 @@ class Base:
 
     # 获取自启动项列表
     @staticmethod
-    def get_autoruns():
+    def get_autoruns(task_id, basename):
         # 1. 连接注册表根键
         root1 = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
         root2 = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
-        result = {}
+        result = []
         try:
             # 2. 指定想要访问的子健
             reg_path = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
@@ -167,7 +167,12 @@ class Base:
                     try:
                         # 4. 通过winreg对象的EnumValue()方法迭代其中的键值
                         n, v, t = winreg.EnumValue(key1, count)
-                        result[n] = v
+                        result.append({
+                            "scanId": task_id,
+                            "basename": basename,
+                            "autoName": n,
+                            "autoRunner": v
+                        })
                         count += 1
                     except EnvironmentError:
                         break
@@ -175,7 +180,12 @@ class Base:
                 while (1):
                     try:
                         n, v, t = winreg.EnumValue(key2, count)
-                        result[n] = v
+                        result.append({
+                            "scanId": task_id,
+                            "basename": basename,
+                            "autoName": n,
+                            "autoRunner": v
+                        })
                         count += 1
                     except EnvironmentError:
                         break
@@ -187,7 +197,8 @@ class Base:
             # 6. 关闭相应根键连接
             winreg.CloseKey(root1)
             winreg.CloseKey(root2)
-        return json.dumps(result)
+        print(result)
+        return result
 
     # 检测补丁安装情况
     @staticmethod
