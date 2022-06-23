@@ -1,3 +1,5 @@
+import datetime
+
 from scan.Base import Base
 import json
 import requests
@@ -65,6 +67,7 @@ def scan_post(value, scan_id):
 
     return dataList  # 返回字节形式
 
+
 def scan_poll(username):
     basename = Base.get_board_id()
     # print(basename)
@@ -88,32 +91,56 @@ def scan_poll(username):
 
     return showlist
 
+
 def scan_create(task_type):
+    # 获取主板ID
     basename = Base.get_board_id()
-    task_num = 20000 + random.randint(1,9999)
-    result = scan.get(task_type)(task_num,basename)
+    # 随机赋值2开头的序号作为扫描任务序号
+    task_num = 20000 + random.randint(1, 9999)
+    # 扫描起始时间
+    start_time = datetime.datetime.now()
+    start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
+    # 通过发布的扫描类型，调用对应扫描函数，并向客户端发送结果
+    result = scan.get(task_type)(task_num, basename)
     scan_post(result, task_num)
+    # 扫描结束时间
+    finish_time = datetime.datetime.now()
+    finish_time = finish_time.strftime("%Y-%m-%d %H:%M:%S")
+    # 扫描入表
+    scan_data = {
+        "id": task_num,
+        "basename": basename,
+        "scanType": task_type,
+        "scanTime": start_time,
+        "finishTime": finish_time
+    }
+    requests.post('http://10.136.126.244:8082/scan/insert',
+                  headers={'Content-Type': 'application/json'},
+                  data=scan_data.encode('utf-8'))
+    # 返回结果
     return result
+
 
 @Gooey(
     richtext_controls=True,  # 打开终端对颜色支持
     program_name="基线安全检测客户端",  # 程序名称
     encoding="utf-8",
     language='chinese',
-	clear_before_run=True
+    clear_before_run=True
 )
-
 def BaselineCheck():
     settings_msg = '此客户端程序为Windows基线安全核查设计'
     parser = GooeyParser(description=settings_msg)
 
     subs = parser.add_subparsers(help='commands', dest='command')
     bind = subs.add_parser('轮询执行任务', help='轮询')
-    bind.add_argument("username1", metavar='用户名',help='输入用户名后执行轮询任务',widget = "TextField")
+    bind.add_argument("username1", metavar='用户名', help='输入用户名后执行轮询任务', widget="TextField")
 
     create_task = subs.add_parser('创建扫描任务', help='用户主动发起扫描任务')
     create_task.add_argument("username2", metavar='用户名', help='请输入用户名', widget="TextField")
-    create_task.add_argument("task", metavar='选择目标任务执行', choices=['任务1：基本信息','任务2：自启动项','任务3：网络信息','任务4：补丁信息','任务5：服务信息','任务6：策略信息'],default='任务1：基本信息')
+    create_task.add_argument("task", metavar='选择目标任务执行',
+                             choices=['任务1：基本信息', '任务2：自启动项', '任务3：网络信息', '任务4：补丁信息', '任务5：服务信息', '任务6：策略信息'],
+                             default='任务1：基本信息')
     args = parser.parse_args()
 
     if args.command == "轮询执行任务":  # 判断是执行哪个parser
@@ -121,11 +148,11 @@ def BaselineCheck():
 
     if args.command == "创建扫描任务":
         str = args.task
-        num = re.findall('\d',str)
+        num = re.findall('\d', str)
         show = scan_create(num[0])
 
+    print(show, flush=True)  # flush=True在打包的时候会用到
 
-    print(show, flush=True)    # flush=True在打包的时候会用到
 
 if __name__ == '__main__':
     BaselineCheck()
