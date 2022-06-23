@@ -5,8 +5,8 @@ class Type:
 
     # 基本信息
     BASE_INFO = 1
-    # 安装的软件
-    INSTALLED_SOFT = 2
+    # 自启动项
+    AUTORUNS_INFO = 2
     # 网络信息
     NETWORK_INFO = 3
     # 补丁信息
@@ -16,4 +16,3 @@ class Type:
     # 策略信息
     POLICY_INFO = 6
     # 自启动项
-    AUTORUNS_INFO = 7

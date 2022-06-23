@@ -204,7 +204,6 @@ def get_policy_info(scan_id, basename):
         result_r = result_r.replace("\r", " ")
         # 加入列表
         # '策略编号','策略名称','检测值','建议值','核查结果','加固提示','策略说明'
-        # result[0], result[1], value, result[5], eval_result, result[9], result_r
         policy_list.append({
             'basename': basename,
             'scanId': scan_id,
@@ -225,3 +224,4 @@ def get_policy_info(scan_id, basename):
     conn.close()
 
     return policy_list
+
