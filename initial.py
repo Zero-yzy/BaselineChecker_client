@@ -24,7 +24,7 @@ scan = {
     '7': vulnerable_scan.vulnerable_check
 }
 
-serveIp = "10.134.41.21:8082"
+serveIp = "127.0.0.1:8082"
 
 
 def user_register(value):
@@ -36,7 +36,7 @@ def user_register(value):
     data = req.json()  # 接收返回的json数据
     return data  # 返回字节形式
 
-
+#用于创建扫描任务后，插入服务端任务列表
 def scan_post(value, scan_id):
     # 贮存response信息
     dataList = []
@@ -70,17 +70,16 @@ def scan_post(value, scan_id):
 
     return dataList  # 返回字节形式
 
-
+#执行轮询任务
 def scan_poll(username):
     basename = Base.get_board_id()
-    # print(basename)
 
     # 组装发送的数据
     send_data = {
         "username": username,
         "basename": basename
     }
-
+    #发送用户名绑定，返回需要完成的任务
     msg = user_register(send_data)
     # print(msg)
     data = msg['data']
@@ -94,7 +93,7 @@ def scan_poll(username):
 
     return showlist
 
-
+#主动创建扫描任务并执行
 def scan_create(task_type):
     # 获取主板ID
     basename = Base.get_board_id()
@@ -133,13 +132,16 @@ def scan_create(task_type):
     clear_before_run=True
 )
 def BaselineCheck():
+    #加入GUI界面
     settings_msg = '此客户端程序为Windows基线安全核查设计'
     parser = GooeyParser(description=settings_msg)
 
+    #轮询模块
     subs = parser.add_subparsers(help='commands', dest='command')
     bind = subs.add_parser('轮询执行任务', help='轮询')
     bind.add_argument("username1", metavar='用户名', help='输入用户名后执行轮询任务', widget="TextField")
 
+    #创建任务模块
     create_task = subs.add_parser('创建扫描任务', help='用户主动发起扫描任务')
     create_task.add_argument("username2", metavar='用户名', help='请输入用户名', widget="TextField")
     create_task.add_argument("task", metavar='选择目标任务执行',

@@ -1,19 +1,5 @@
-import socket
 import datetime
-from const.Type import Type
-from scan.Base import Base
 from scan.policy_check import get_policy_info
-import ctypes
-import sys
-
-
-# 获取管理员权限
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-
-    except:
-        return False
 
 
 def policy_check(task_id, bsaename):
@@ -29,5 +15,4 @@ def policy_check(task_id, bsaename):
     data = get_policy_info(task_id, bsaename)
     result['send_data'] = data
 
-    print(result)
     return result

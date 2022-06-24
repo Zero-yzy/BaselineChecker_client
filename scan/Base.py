@@ -117,7 +117,6 @@ class Base:
         return json.dumps(software_name)
 
     # 获取网络配置信息
-
     @staticmethod
     def get_network_info(task_id, basename):
         # 实例化wmi类
@@ -142,7 +141,6 @@ class Base:
         info = {
             "ipAddress": obj.IPAddress[0],
             "netMask": obj.IPSubnet[0],
-            #    "gateway": obj.DefaultIPGateway[0],
             "mac": obj.MACAddress
         }
 
@@ -242,5 +240,3 @@ class Base:
             })
 
         return result
-
-

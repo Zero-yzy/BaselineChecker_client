@@ -1,7 +1,4 @@
-import socket
 import datetime
-from const.Type import Type
-from scan.Base import Base
 from scan.service_check import get_service_info
 
 

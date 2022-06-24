@@ -85,5 +85,4 @@ def get_service_info(scan_id, basename):
     # 关闭connection：
     conn.close()
 
-    # return json.dumps(service_list, ensure_ascii=False)
     return service_list

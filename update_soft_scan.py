@@ -1,6 +1,4 @@
-import socket
 import datetime
-from const.Type import Type
 from scan.Base import Base
 
 
